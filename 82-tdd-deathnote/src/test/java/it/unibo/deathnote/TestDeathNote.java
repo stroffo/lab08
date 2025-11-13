@@ -9,32 +9,33 @@ import it.unibo.deathnote.api.DeathNote;
 import it.unibo.deathnote.impl.DeathNoteImpl;
 
 class TestDeathNote {
-    final DeathNote deathNote = new DeathNoteImpl();
+    private final DeathNote deathNote = new DeathNoteImpl();
 
-    private void isValidMessage(String msg) {
+    private void isValidString(final String msg) {
         assertNotNull(msg); // Non-null message
         assertFalse(msg.isBlank()); // Not a blank or empty message
     }
-    
+
     @Test
     void testZeroOrNegativeRule() {
         try {
             deathNote.getRule(0);
         } catch (final IllegalArgumentException e) {
-            isValidMessage(e.getMessage());
+            isValidString(e.getMessage());
         }
-        
-        // try {
-        //     deathNote.getRule(-1);
-        // } catch (final IllegalArgumentException e) {
-        //     isValidMessage(e.getMessage());
-        // }
-        throw new AssertionError();
+
+        try {
+            deathNote.getRule(-1);
+        } catch (final IllegalArgumentException e) {
+            isValidString(e.getMessage());
+        }
     }
 
     @Test
     void testNullOrEmptyRules() {
-        throw new AssertionError();
+        for (String rule : DeathNote.RULES) {
+            isValidString(rule);
+        }
     }
 
     @Test
