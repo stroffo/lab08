@@ -18,11 +18,11 @@ class TestDeathNote {
     
     @Test
     void testZeroOrNegativeRule() {
-        // try {
-        //     deathNote.getRule(0);
-        // } catch (final IllegalArgumentException e) {
-        //     isValidMessage(e.getMessage());
-        // }
+        try {
+            deathNote.getRule(0);
+        } catch (final IllegalArgumentException e) {
+            isValidMessage(e.getMessage());
+        }
         
         // try {
         //     deathNote.getRule(-1);
