@@ -1,8 +1,13 @@
 package it.unibo.deathnote.impl;
 
+import java.util.List;
+
 import it.unibo.deathnote.api.DeathNote;
 
 public final class DeathNoteImpl implements DeathNote {
+
+    private List<DeathNoteEntry> entries = List.of();
+    private DeathNoteEntry latestEntry;
 
     @Override
     public String getRule(final int ruleNumber) {
@@ -15,6 +20,12 @@ public final class DeathNoteImpl implements DeathNote {
 
     @Override
     public void writeName(String name) {
+        var newEntry = new DeathNoteEntry();
+        newEntry.name = name;
+        
+        entries.add(newEntry);
+        latestEntry = newEntry;
+
         throw new UnsupportedOperationException("Unimplemented method 'writeName'");
     }
 
@@ -43,7 +54,15 @@ public final class DeathNoteImpl implements DeathNote {
         throw new UnsupportedOperationException("Unimplemented method 'isNameWritten'");
     }
 
-    class DeathNoteEntry {
-        private final String name = "";
+    private class DeathNoteEntry {
+        private String name = "";
+        private String deathCause = "";
+        private String deathDetails = "";
+
+        private void flush() {
+            name = "";
+            deathCause = "";
+            deathDetails = "";
+        }
     }
 }

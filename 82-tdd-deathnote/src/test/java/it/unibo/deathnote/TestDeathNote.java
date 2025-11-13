@@ -1,7 +1,6 @@
 package it.unibo.deathnote;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -10,6 +9,13 @@ import it.unibo.deathnote.impl.DeathNoteImpl;
 
 class TestDeathNote {
     private final DeathNote deathNote = new DeathNoteImpl();
+    private final String[] testNames =  {
+        "Diego Mario Alessi Tosi",
+        "Pierpaolo Rossi",
+        "",
+        "Ok"
+    };
+    private final String defaultDeathCause = "heart attack";
 
     private void isValidString(final String msg) {
         assertNotNull(msg); // Non-null message
@@ -40,12 +46,37 @@ class TestDeathNote {
 
     @Test
     void testHumanDeath() {
-        throw new AssertionError();
+        assertFalse(deathNote.isNameWritten(testNames[0]));
+
+        deathNote.writeName(testNames[0]);
+
+        assertTrue(deathNote.isNameWritten(testNames[0]));
+        assertFalse(deathNote.isNameWritten(testNames[1]));
+        assertFalse(deathNote.isNameWritten(testNames[2]));
     }
 
     @Test
     void testCauseOfDeath() {
-        throw new AssertionError();
+        assertThrows(IllegalStateException.class, () -> {
+            deathNote.writeDeathCause("car accident");
+        });
+
+        deathNote.writeName(testNames[1]);
+        assertEquals(defaultDeathCause, deathNote.getDeathCause(testNames[1]));
+        
+        deathNote.writeName(testNames[3]);
+        String newDeathCause = "karting incident";
+        Boolean validCause = deathNote.writeDeathCause(newDeathCause);
+        assertTrue(validCause);
+        assertEquals(deathNote.getDeathCause(testNames[3]), newDeathCause);
+        assertDoesNotThrow(() -> {
+            Thread.sleep(100L);
+        });
+
+        newDeathCause = "tripping on stairs";
+        validCause = deathNote.writeDeathCause(newDeathCause);
+        assertFalse(validCause);
+        assertNotEquals(deathNote.getDeathCause(testNames[3]), newDeathCause);
     }
 
     @Test
