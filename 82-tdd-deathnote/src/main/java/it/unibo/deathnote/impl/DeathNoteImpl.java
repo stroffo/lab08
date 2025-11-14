@@ -1,5 +1,6 @@
 package it.unibo.deathnote.impl;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import it.unibo.deathnote.api.DeathNote;

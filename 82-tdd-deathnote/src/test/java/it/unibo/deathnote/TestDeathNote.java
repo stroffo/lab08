@@ -1,6 +1,12 @@
 package it.unibo.deathnote;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -8,16 +14,17 @@ import it.unibo.deathnote.api.DeathNote;
 import it.unibo.deathnote.impl.DeathNoteImpl;
 
 class TestDeathNote {
+    private static final String DEFAULT_DEATH_CAUSE = "heart attack";
+
     private final DeathNote deathNote = new DeathNoteImpl();
-    private final String[] testNames =  {
+    private final String[] testNames = {
         "Diego Mario Alessi Tosi",
         "Pierpaolo Rossi",
         "",
         "Ok",
         "Filippo Ugolini",
-        "Samuele Lotti"
+        "Samuele Lotti",
     };
-    private final String defaultDeathCause = "heart attack";
 
     private void isValidString(final String msg) {
         assertNotNull(msg); // Non-null message
@@ -41,7 +48,7 @@ class TestDeathNote {
 
     @Test
     void testNullOrEmptyRules() {
-        for (String rule : DeathNote.RULES) {
+        for (final String rule : DeathNote.RULES) {
             isValidString(rule);
         }
     }
@@ -64,14 +71,15 @@ class TestDeathNote {
         });
 
         deathNote.writeName(testNames[1]);
-        assertEquals(defaultDeathCause, deathNote.getDeathCause(testNames[1]));
-        
+        assertEquals(DEFAULT_DEATH_CAUSE, deathNote.getDeathCause(testNames[1]));
+
         deathNote.writeName(testNames[3]);
         String newDeathCause = "karting incident";
         assertTrue(deathNote.writeDeathCause(newDeathCause));
         assertEquals(deathNote.getDeathCause(testNames[3]), newDeathCause);
+        final long sleepTime = 100;
         assertDoesNotThrow(() -> {
-            Thread.sleep(100L);
+            Thread.sleep(sleepTime);
         });
 
         newDeathCause = "tripping on stairs";
@@ -84,17 +92,18 @@ class TestDeathNote {
         assertThrows(IllegalStateException.class, () -> {
             deathNote.writeDetails("very bad accident");
         });
-        
+
         deathNote.writeName(testNames[4]);
-        assertTrue(deathNote.getDeathDetails(defaultDeathCause).isBlank());
+        assertTrue(deathNote.getDeathDetails(DEFAULT_DEATH_CAUSE).isBlank());
 
         String newDeathDetails = "ran for too long";
         assertTrue(deathNote.writeDetails(newDeathDetails));
         assertEquals(newDeathDetails, deathNote.getDeathDetails(testNames[4]));
 
         deathNote.writeName(testNames[5]);
+        final long sleepTime = 6100;
         assertDoesNotThrow(() -> {
-            Thread.sleep(6100L);
+            Thread.sleep(sleepTime);
         });
         newDeathDetails = "checked nvidia stock prices";
         assertFalse(deathNote.writeDetails(newDeathDetails));
