@@ -13,7 +13,9 @@ class TestDeathNote {
         "Diego Mario Alessi Tosi",
         "Pierpaolo Rossi",
         "",
-        "Ok"
+        "Ok",
+        "Filippo Ugolini",
+        "Samuele Lotti"
     };
     private final String defaultDeathCause = "heart attack";
 
@@ -81,6 +83,22 @@ class TestDeathNote {
 
     @Test
     void testDetailsOfDeath() {
-        throw new AssertionError();
+        assertThrows(IllegalStateException.class, () -> {
+            deathNote.writeDetails("very bad accident");
+        });
+        
+        deathNote.writeName(testNames[4]);
+        assertTrue(deathNote.getDeathDetails(defaultDeathCause).isBlank());
+
+        String newDeathDetails = "ran for too long";
+        assertTrue(deathNote.writeDetails(newDeathDetails));
+        assertEquals(newDeathDetails, deathNote.getDeathDetails(testNames[4]));
+
+        deathNote.writeName(testNames[5]);
+        assertDoesNotThrow(() -> {
+            Thread.sleep(6100L);
+        });
+        newDeathDetails = "checked nvidia stock prices";
+        assertFalse(deathNote.writeDetails(newDeathDetails));
     }
 }
