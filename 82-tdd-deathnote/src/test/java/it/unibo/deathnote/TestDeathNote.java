@@ -68,16 +68,14 @@ class TestDeathNote {
         
         deathNote.writeName(testNames[3]);
         String newDeathCause = "karting incident";
-        Boolean validCause = deathNote.writeDeathCause(newDeathCause);
-        assertTrue(validCause);
+        assertTrue(deathNote.writeDeathCause(newDeathCause));
         assertEquals(deathNote.getDeathCause(testNames[3]), newDeathCause);
         assertDoesNotThrow(() -> {
             Thread.sleep(100L);
         });
 
         newDeathCause = "tripping on stairs";
-        validCause = deathNote.writeDeathCause(newDeathCause);
-        assertFalse(validCause);
+        assertFalse(deathNote.writeDeathCause(newDeathCause));
         assertNotEquals(deathNote.getDeathCause(testNames[3]), newDeathCause);
     }
 
