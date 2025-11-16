@@ -7,7 +7,7 @@ import it.unibo.deathnote.api.DeathNote;
 
 public final class DeathNoteImpl implements DeathNote {
 
-    private List<DeathNoteEntry> entries = List.of();
+    private List<DeathNoteEntry> entries = new LinkedList<>();
     private DeathNoteEntry latestEntry;
 
     @Override
@@ -21,18 +21,27 @@ public final class DeathNoteImpl implements DeathNote {
 
     @Override
     public void writeName(String name) {
-        var newEntry = new DeathNoteEntry();
-        newEntry.name = name;
+        if (name == null) throw new NullPointerException();
         
-        entries.add(newEntry);
-        latestEntry = newEntry;
+        if (latestEntry != null) {
+            entries.add(latestEntry.clone());
+        } 
 
-        throw new UnsupportedOperationException("Unimplemented method 'writeName'");
+        latestEntry = new DeathNoteEntry(name);
     }
 
     @Override
     public boolean writeDeathCause(String cause) {
-        throw new UnsupportedOperationException("Unimplemented method 'writeDeathCause'");
+        if (cause == null || latestEntry == null) {
+            throw new IllegalStateException();
+        }
+        
+        if (latestEntry.getTimeElapsed() < 40 ) {
+            latestEntry.deathCause = cause;
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -51,19 +60,43 @@ public final class DeathNoteImpl implements DeathNote {
     }
 
     @Override
-    public boolean isNameWritten(String name) {
-        throw new UnsupportedOperationException("Unimplemented method 'isNameWritten'");
+    public boolean isNameWritten(final String name) {
+        if (latestEntry == null) return false;
+        
+        if (latestEntry.name == name) return true;
+        
+        for (DeathNoteEntry entry : entries) {
+            if (entry.name == name) return true;
+        }
+
+        return false;
     }
 
-    private class DeathNoteEntry {
-        private String name = "";
+    private class DeathNoteEntry implements Cloneable {
+        private final String name;
         private String deathCause = "";
         private String deathDetails = "";
+        private long nameWriteTime;
 
-        private void flush() {
-            name = "";
-            deathCause = "";
-            deathDetails = "";
+        public DeathNoteEntry(final String name) {
+            this.name = name;
+            nameWriteTime = System.currentTimeMillis();
+        }
+
+        public long getTimeElapsed() {   
+            return System.currentTimeMillis() - nameWriteTime;
+        }
+
+        /**
+         * Get a shallow copy of the entry
+         * @return a shallow copy of this object
+         */
+        protected DeathNoteEntry clone() {
+            var obj = new DeathNoteEntry(this.name);
+            obj.deathCause = this.deathCause;
+            obj.deathDetails = this.deathDetails;
+            obj.nameWriteTime = this.nameWriteTime;
+            return obj;    
         }
     }
 }
