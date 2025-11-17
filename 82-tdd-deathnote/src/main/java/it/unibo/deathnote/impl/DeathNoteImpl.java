@@ -6,6 +6,7 @@ import java.util.List;
 import it.unibo.deathnote.api.DeathNote;
 
 public final class DeathNoteImpl implements DeathNote {
+    private static final String DEFAULT_DEATH_CAUSE = "heart attack";
 
     private List<DeathNoteEntry> entries = new LinkedList<>();
     private DeathNoteEntry latestEntry;
@@ -28,6 +29,7 @@ public final class DeathNoteImpl implements DeathNote {
         } 
 
         latestEntry = new DeathNoteEntry(name);
+        latestEntry.deathCause = DEFAULT_DEATH_CAUSE;
     }
 
     @Override
@@ -35,7 +37,7 @@ public final class DeathNoteImpl implements DeathNote {
         if (cause == null || latestEntry == null) {
             throw new IllegalStateException();
         }
-        
+
         if (latestEntry.getTimeElapsed() < 40 ) {
             latestEntry.deathCause = cause;
             return true;
@@ -51,7 +53,13 @@ public final class DeathNoteImpl implements DeathNote {
 
     @Override
     public String getDeathCause(String name) {
-        throw new UnsupportedOperationException("Unimplemented method 'getDeathCause'");
+        var entry = this.getEntryByName(name);
+
+        if (entry == null) {
+            throw new IllegalArgumentException();
+        }
+
+        return entry.deathCause;
     }
 
     @Override
@@ -62,7 +70,7 @@ public final class DeathNoteImpl implements DeathNote {
     @Override
     public boolean isNameWritten(final String name) {
         if (latestEntry == null) return false;
-        
+
         if (latestEntry.name == name) return true;
         
         for (DeathNoteEntry entry : entries) {
@@ -70,6 +78,20 @@ public final class DeathNoteImpl implements DeathNote {
         }
 
         return false;
+    }
+
+    private DeathNoteEntry getEntryByName(final String name) {
+        if (latestEntry.name == name) {
+            return latestEntry;
+        }
+
+        for (DeathNoteEntry entry : entries) {
+            if (entry.name == name) {
+                return entry;
+            }
+        }
+
+        return null;
     }
 
     private class DeathNoteEntry implements Cloneable {
